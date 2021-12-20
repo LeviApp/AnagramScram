@@ -1,9 +1,10 @@
 <template>
-    <img alt="Vue logo" src="../assets/anagramscramlogomain.png">
-    <h1>AnagramScram</h1>
-    <section>
-        <a>Animals</a>
-    </section>
+    <div class="nav" >
+        <h1>AnagramScram</h1>
+        <section>
+            <a>ANIMALS</a>
+        </section>
+    </div>
 </template>
 
 <script>
@@ -14,9 +15,7 @@
     }
     ,
     methods: {
-        testClick() {
-            console.log("click is working")
-        }
+    
     }
     }
 </script>
