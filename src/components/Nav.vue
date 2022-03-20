@@ -1,6 +1,6 @@
 <template>
     <div class="nav" >
-        <img src="../assets/anagramscramlogomain.png" alt="">
+        <img src="../assets/anagramscramlogomain.png" alt="AnagramScram logo">
         <h1>AnagramScram</h1>
         <section>
             <a>ANIMALS</a>

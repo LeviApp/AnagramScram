@@ -18,10 +18,10 @@
                 <h3 :data-open="betweenLetters.length>=1 || level==='∞'" :data-empty="betweenLetters[index][0] === ' '" :key="index" v-for="(betweenL,index) in betweenLetters">{{betweenLetters[index][0]}}</h3>
             </section>
             <section class="word">
-                <h3 :data-open="letters[index][1]" :key="index" v-for="(letter,index) in letters" @click="guessLetter(index)">{{letters[index][0]}}</h3>
+                <button :data-open="letters[index][1]" :key="index" v-for="(letter,index) in letters" @click="guessLetter(index)">{{letters[index][0]}}</button>
             </section>
             <section class="guess">
-                <h3 :key="index" v-for="(letter,index) in guess">{{guess[index]}}</h3>
+                <h3 :key="index" :class="!submitted ? '' : guess[index] === solution[index] ? 'right' : 'wrong'" v-for="(letter,index) in guess">{{guess[index]}}</h3>
             </section>
             <button :data-empty="letters.length === 0" class="rearrange" :disabled='rearrange===0' @click="rearrangeLetters()">Rearrange</button>
             <button :data-empty="letters.length === 0 || guess.length === 0" class="reset" @click="reset()">Reset</button>
@@ -209,6 +209,7 @@ highscore: 0,
 score: 0,
 lives: 10,
 rearrange: 10,
+submitted: false,
 level: 1
         }
     },
@@ -217,8 +218,7 @@ level: 1
     },
     methods: {
         start() {
-            console.log(this.wordsReset, this.words)
-
+            this.submitted = false
             if (this.score >= 500000) {
                 this.seconds = 20000;
                 this.rearrange = 20
@@ -235,7 +235,7 @@ level: 1
             this.betweenLetters = [];
             this.words[this.level-1].sort(() => Math.random() - 0.5)
             let word = this.words[this.level-1][0].split("")
-            this.solution = this.words[this.level-1][0]
+            this.solution = this.words[this.level-1][0].split("")
             for (let i = 0; i < word.length; i++) {
                 this.letters.push([word[i], true])
                 this.guess.push("")
@@ -302,6 +302,7 @@ level: 1
         },
 
         reset() {
+            this.submitted = false
             this.letters.map(letter => letter[1] = true)
 
             for (let i = 0; i < this.guess.length; i++) {
@@ -311,7 +312,8 @@ level: 1
         },
 
         submitAnswer() {
-            if (this.guess.join('') === this.solution) {
+            this.submitted = true
+            if (this.guess.join('') === this.solution.join('')) {
                 this.clearClick()
                 this.score+=this.seconds
                 this.words[this.level-1].shift()
@@ -347,6 +349,7 @@ level: 1
             }
             else {
                 this.lives--
+                console.log(this.guess, this.solution)
                 if (this.lives < 1) {
                     this.words = []
                     this.betweenWords = [["GAME OVER!"]]
@@ -517,26 +520,27 @@ level: 1
         grid-row: 1;
         margin: 0;
     }
-    .word h3[data-open=true] {
+    .word button[data-open=true] {
         background: yellow;
         padding: 20px;
         font-size: 2rem;
         margin: 5px;
         border-radius: 10px;
-        width: 35px;
-        height: 35px;
+        width: 80px;
+        height: 80px;
         cursor: pointer;
         border: 2px solid yellow;
     }
 
-    .word h3[data-open=false] {
+    .word button[data-open=false] {
         background: black;
+        color: yellow;
         padding: 20px;
         font-size: 2rem;
         margin: 5px;
         border-radius: 10px;
-        width: 35px;
-        height: 35px;
+        width: 80px;
+        height: 80px;
         pointer-events: none;
         transition-duration: 1000ms;
         border: 2px solid black;
@@ -562,12 +566,28 @@ level: 1
         cursor: pointer;
     }
 
+    .guess .right {
+        background: lightgreen
+    }
+
+    .guess .wrong {
+        background: lightcoral
+    }
+
     .extra[data-open=false] {
         display: none;
     }
 
     .extra h3[data-open=true] {
-        pointer-events: none
+        background: yellow;
+        padding: 20px;
+        font-size: 2rem;
+        margin: 5px;
+        border-radius: 10px;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        border: 2px solid yellow;
     }
 
     .extra h3[data-open=false] {
