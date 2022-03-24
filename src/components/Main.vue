@@ -13,18 +13,22 @@
 
             </section>
         </section>
-        <section class="game-area">
-            <section :data-open="betweenLetters.length>=1 || level==='∞'" class="word extra">
-                <h3 :data-open="betweenLetters.length>=1 || level==='∞'" :data-empty="betweenLetters[index][0] === ' '" :key="index" v-for="(betweenL,index) in betweenLetters">{{betweenLetters[index][0]}}</h3>
+        <section class="game-area">   
+            <section class="word-play">         
+                <section :data-open="betweenLetters.length>=1 || level==='∞'" class="word extra">
+                    <h3 :data-open="betweenLetters.length>=1 || level==='∞'" :data-empty="betweenLetters[index][0] === ' '" :key="index" v-for="(betweenL,index) in betweenLetters">{{betweenLetters[index][0]}}</h3>
+                </section>
+                <section class="word">
+                    <button :data-open="letters[index][1]" :key="index" v-for="(letter,index) in letters" @click="guessLetter(index)">{{letters[index][0]}}</button>
+                </section>
+                <section class="guess">
+                    <h3 :key="index" :class="!submitted ? '' : guess[index] === solution[index] ? 'right' : 'wrong'" v-for="(letter,index) in guess">{{guess[index]}}</h3>
+                </section>
             </section>
-            <section class="word">
-                <button :data-open="letters[index][1]" :key="index" v-for="(letter,index) in letters" @click="guessLetter(index)">{{letters[index][0]}}</button>
+            <section class="button-group">
+                <button :data-empty="letters.length === 0" class="rearrange" :disabled='rearrange===0' @click="rearrangeLetters()">Rearrange</button>
+                <button :data-empty="letters.length === 0 || guess.length === 0" class="reset" @click="reset()">Reset</button>
             </section>
-            <section class="guess">
-                <h3 :key="index" :class="!submitted ? '' : guess[index] === solution[index] ? 'right' : 'wrong'" v-for="(letter,index) in guess">{{guess[index]}}</h3>
-            </section>
-            <button :data-empty="letters.length === 0" class="rearrange" :disabled='rearrange===0' @click="rearrangeLetters()">Rearrange</button>
-            <button :data-empty="letters.length === 0 || guess.length === 0" class="reset" @click="reset()">Reset</button>
             <button :data-empty="letters.length === 0 || guess.length === 0" class="submit" @click="submitAnswer()">Submit</button>
         </section>
     </div>
@@ -210,7 +214,7 @@ score: 0,
 lives: 10,
 rearrange: 10,
 submitted: false,
-level: 1
+level: 10
         }
     },
     props: {
@@ -414,6 +418,7 @@ level: 1
         display: flex;
         justify-content: center;
         flex-direction: column;
+        align-items: center;
         margin-top: 20px;
         height: 100%;
         background: deepskyblue
@@ -424,6 +429,7 @@ level: 1
         flex-direction: column;
         align-items: flex-start;
         margin-left: 20px;
+        align-self: flex-start;
     }
 
     .top  section{
@@ -439,7 +445,7 @@ level: 1
         font-size: 1.5rem;
         cursor: pointer;
         background: black;
-        color: darkgray;
+        color: yellow;
     }
 
     .top button[data-empty=false] {
@@ -458,11 +464,236 @@ level: 1
     }
 
     .game-area {
-        display: grid;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: auto;
+        display: flex;
+        flex-direction: column;
         justify-content: center;
+        width: 95%;
+        margin: 20px 0;
+
+    }
+
+    .game-area button[data-empty=false]:hover {
+        cursor: pointer;
+        background: yellow;
+        color: black;
+        transition-duration: 1000ms
+    }
+
+    .game-area .rearrange[data-empty=false] {
+        border-radius: 10px;
+        padding: 20px;
+        margin-right: 5px;
+        grid-row: 1;
+        font-size: 1.5rem;
+        cursor: pointer;
+        background: black;
+        color: yellow;
         width: 100%;
+    }
+
+    .game-area .rearrange:disabled {
+       pointer-events: none;
+       opacity: 0.5;
+       width: 100%
+    }
+
+    .game-area .reset[data-empty=false] {
+        border-radius: 10px;
+        padding: 20px;
+        margin: 0px;
+        grid-row: 2;
+        font-size: 1.5rem;
+        cursor: pointer;
+        width: 100%;
+        background: black;
+        color: yellow;
+    }
+
+    .game-area .submit[data-empty=false] {
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        grid-row: 1 / span 2;
+        font-size: 1.5rem;
+        cursor: pointer;
+        background: black;
+        color: yellow;
+    }
+
+    .game-area button[data-empty=true] {
+        display: none;
+    }
+
+    .word-play {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
+    }
+
+    .word {
+        display: flex;
+        justify-content: center;
+        grid-row: 1;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .word button[data-open=true] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: yellow;
+        padding: 5px;
+        font-size: 1rem;
+        margin: 2px;
+        border-radius: 10px;
+        width: 100%;
+        min-width: 20px;
+        text-align: center;
+        cursor: pointer;
+        border: 2px solid yellow;
+    }
+
+    .word button[data-open=false] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: black;
+        color: yellow;
+        padding: 5px;
+        font-size: 1rem;
+        margin: 2px;
+        border-radius: 10px;
+        width: 100%;
+        min-width: 20px;
+        pointer-events: none;
+        transition-duration: 1000ms;
+        border: 2px solid black;
+
+    }
+
+    .guess {
+        display: flex;
+        justify-content: center;
+        grid-row: 2;
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .guess h3 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        padding: 3px;
+        font-size: 1rem;
+        margin: 2px;
+        border-radius: 10px;
+        border: 1px dashed black;
+        width: 100%;
+        min-width: 12px;
+        height: 25px;
+        cursor: pointer;
+        
+    }
+
+    .guess .right {
+        background: lightgreen
+    }
+
+    .guess .wrong {
+        background: lightcoral
+    }
+
+    .extra[data-open=false] {
+        display: none;
+    }
+
+    .extra h3[data-open=true] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: yellow;
+        padding: 5px;
+        font-size: 1.25rem;
+        margin: 2px;
+        border-radius: 10px;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        border: 2px solid yellow;
+    }
+
+    .extra h3[data-open=false] {
+        display: none;
+    }
+
+    .extra h3[data-empty=true] {
+        visibility: hidden;
+
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: row;
+        margin: 10px 0;
+    }
+
+    .level-up[data-empty=false] {
+        display: none;
+    }
+
+    .level-up[data-empty=true] {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        align-items: flex-start
+    }
+    .level-up img {
+        opacity: 0;
+        top: -125px;
+        left: -100px;
+        position: absolute;
+        width: 200px;
+        animation: finished 1000ms linear 2s infinite;
+
+    }
+
+    @media screen and (min-width: 640px) {
+        .word button[data-open=true] {
+            font-size: 1.75rem
+        }
+
+    .word button[data-open=false] {
+        font-size: 1.75rem
+    }
+
+    .guess h3 {
+        font-size: 1.75rem;
+        height: 22px;
+        padding: 10px;
+        border: 2px dashed
+    }
+
+        .extra h3[data-open=true] {
+            padding: 20px;
+            font-size: 1.75rem;
+    }
+
+
+    }
+
+
+    @media screen and (min-width: 1230px) {
+    .game-area {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 95%;
     }
 
     .game-area button[data-empty=false]:hover {
@@ -480,12 +711,14 @@ level: 1
         font-size: 1.5rem;
         cursor: pointer;
         background: black;
-        color: darkgray;
+        color: yellow;
+        width: auto;
     }
 
     .game-area .rearrange:disabled {
        pointer-events: none;
        opacity: 0.5;
+       width: auto;
     }
 
     .game-area .reset[data-empty=false] {
@@ -496,22 +729,31 @@ level: 1
         font-size: 1.5rem;
         cursor: pointer;
         background: black;
-        color: darkgray;
+        color: yellow;
+        width: auto;
     }
 
     .game-area .submit[data-empty=false] {
         border-radius: 10px;
         padding: 20px;
-        margin: 10px;
+        margin: 5px;
         grid-row: 1 / span 2;
         font-size: 1.5rem;
         cursor: pointer;
         background: black;
-        color: darkgray;
+        color: yellow;
     }
 
     .game-area button[data-empty=true] {
         display: none;
+    }
+
+    .word-play {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
     }
 
     .word {
@@ -519,15 +761,19 @@ level: 1
         justify-content: center;
         grid-row: 1;
         margin: 0;
+        width: 100%;
+        height: 100%;
     }
     .word button[data-open=true] {
         background: yellow;
-        padding: 20px;
-        font-size: 2rem;
+        padding: 0px 20px;
+        font-size: 1.75rem;
         margin: 5px;
         border-radius: 10px;
-        width: 80px;
-        height: 80px;
+        width: 100%;
+        max-width: 75px;
+        min-width: 40px;
+
         cursor: pointer;
         border: 2px solid yellow;
     }
@@ -535,12 +781,13 @@ level: 1
     .word button[data-open=false] {
         background: black;
         color: yellow;
-        padding: 20px;
-        font-size: 2rem;
+        padding: 0px 20px;
+        font-size: 1.75rem;
         margin: 5px;
         border-radius: 10px;
-        width: 80px;
-        height: 80px;
+        width: 100%;
+        max-width: 75px;
+        min-width: 40px;
         pointer-events: none;
         transition-duration: 1000ms;
         border: 2px solid black;
@@ -550,32 +797,29 @@ level: 1
     .guess {
         display: flex;
         justify-content: center;
-        grid-row: 2
+        grid-row: 2;
+        width: 100%;
+        height: 100%;
 
     }
 
     .guess h3 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: white;
-        padding: 20px;
-        font-size: 2rem;
+        padding: 10px;
+        font-size: 1.75rem;
         margin: 5px;
         border-radius: 10px;
         border: 2px dashed black;
-        width: 35px;
-        height: 35px;
+        width: 100%;
+        max-width: 51px;
+        min-width: 16px;
+        height: auto;
+
         cursor: pointer;
-    }
-
-    .guess .right {
-        background: lightgreen
-    }
-
-    .guess .wrong {
-        background: lightcoral
-    }
-
-    .extra[data-open=false] {
-        display: none;
+        
     }
 
     .extra h3[data-open=true] {
@@ -599,6 +843,12 @@ level: 1
 
     }
 
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+    }
+
     .level-up[data-empty=false] {
         display: none;
     }
@@ -617,5 +867,6 @@ level: 1
         width: 200px;
         animation: finished 1000ms linear 2s infinite;
 
+    }
     }
 </style>
