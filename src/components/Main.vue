@@ -559,6 +559,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        margin-top: 20px;
         margin-left: 20px;
         align-self: flex-start;
     }
@@ -632,7 +633,7 @@
         padding: 20px;
         margin-right: 5px;
         grid-row: 1;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         cursor: pointer;
         background: black;
         color: yellow;
@@ -650,7 +651,7 @@
         padding: 20px;
         margin: 0px;
         grid-row: 2;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         cursor: pointer;
         width: 100%;
         background: black;
@@ -660,9 +661,9 @@
     .game-area .submit[data-empty=false] {
         border-radius: 10px;
         padding: 20px;
-        margin: 10px 0;
+        margin: 0;
         grid-row: 1 / span 2;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         cursor: pointer;
         background: black;
         color: yellow;
