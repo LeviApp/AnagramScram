@@ -68,7 +68,7 @@
         name: 'Main',
         data: function () {
             return {
-                seconds: 10000,
+                seconds: Number(localStorage.getItem('seconds')) || 10000,
                 timer: {},
                 words: [
                     [
@@ -250,7 +250,7 @@
                 highscore: Number(localStorage.getItem('highscore')) || 0,
                 score: Number(localStorage.getItem('score')) || 0,
                 lives: Number(localStorage.getItem('lives')) || 10,
-                rearrange: 10,
+                rearrange: Number(localStorage.getItem('rearrange')) || 10,
                 submitted: false,
                 level: Number(localStorage.getItem('level')) || 1,
                 diff: 3,
@@ -333,6 +333,8 @@
                     if (this.score > this.highscore) {
                         this.highscore = this.score
                     }
+                        localStorage.setItem('seconds', 10000);
+                        localStorage.setItem('rearrange', 10);
                         localStorage.setItem('highscore', this.highscore);
                         localStorage.setItem('score', 0);
                         localStorage.setItem('lives', 10);
@@ -461,6 +463,8 @@
                 }
 
                 if (this.level === "∞" || this.lives === 0) {
+                    localStorage.setItem('seconds', 10000);
+                    localStorage.setItem('rearrange', 10);
                     localStorage.setItem('highscore', this.highscore);
                     localStorage.setItem('score', 0);
                     localStorage.setItem('lives', 10);
@@ -473,6 +477,18 @@
                 }
 
                 else {
+                    if (this.score < 250000) {
+                        localStorage.setItem('seconds', 10000);
+                        localStorage.setItem('rearrange', 10);
+                    }
+                    else if (this.score < 500000) {
+                        localStorage.setItem('seconds', 15000);
+                        localStorage.setItem('rearrange', 15);
+                    }
+                    else {
+                        localStorage.setItem('seconds', 20000);
+                        localStorage.setItem('rearrange', 20);
+                    }
                     localStorage.setItem('highscore', this.highscore);
                     localStorage.setItem('score', this.score);
                     localStorage.setItem('lives', this.lives);
