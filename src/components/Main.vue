@@ -612,7 +612,7 @@
         justify-content: center;
         flex-direction: column;
         align-items: center;
-        margin-top: 20px;
+        margin-top: 10px;
         height: 100%;
         background: deepskyblue
     }
@@ -625,7 +625,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        margin-top: 20px;
+        margin-top: 10px;
         margin-left: 20px;
         align-self: flex-start;
     }
