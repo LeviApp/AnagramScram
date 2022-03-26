@@ -247,14 +247,15 @@
                 ],
                 guess: [],
                 solution: "",
-                highscore: 0,
-                score: 0,
-                lives: 10,
+                highscore: Number(localStorage.getItem('highscore')) || 0,
+                score: Number(localStorage.getItem('score')) || 0,
+                lives: Number(localStorage.getItem('lives')) || 10,
                 rearrange: 10,
                 submitted: false,
-                level: 1,
+                level: Number(localStorage.getItem('level')) || 1,
                 diff: 3,
                 resetter: 1,
+                currentWords: JSON.parse(localStorage.getItem("currentWords")) || []
             }
         },
         props: {
@@ -262,6 +263,19 @@
         },
         methods: {
             start() {
+                if (localStorage.getItem("currentWords") === null) {
+                    this.currentWords = [
+                        'DOG', 'PIG', 'RAT',
+                        'COW', 'EMU', 'FOX',
+                        'OWL', 'ELK', 'FLY',
+                        'YAK'
+                    ]
+                }
+                else {
+                    if (this.currentWords.length === 0) {
+                        this.currentWords = this.words[this.level - 1];
+                    }
+                }
                 this.submitted = false
                 if (this.score >= 500000) {
                     this.seconds = 20000;
@@ -275,9 +289,9 @@
                 }
                 this.betweenWords = [];
                 this.betweenLetters = [];
-                this.words[this.level - 1].sort(() => Math.random() - 0.5)
-                let word = this.words[this.level - 1][0].split("")
-                this.solution = this.words[this.level - 1][0].split("")
+                this.currentWords.sort(() => Math.random() - 0.5)
+                let word = this.currentWords[0].split("")
+                this.solution = this.currentWords[0].split("")
                 for (let i = 0; i < word.length; i++) {
                     this.letters.push([word[i], true])
                     this.guess.push("")
@@ -319,7 +333,16 @@
                     if (this.score > this.highscore) {
                         this.highscore = this.score
                     }
-
+                        localStorage.setItem('highscore', this.highscore);
+                        localStorage.setItem('score', 0);
+                        localStorage.setItem('lives', 10);
+                        localStorage.setItem('level', 1);
+                        localStorage.setItem('currentWords', JSON.stringify([
+                        'DOG', 'PIG', 'RAT',
+                        'COW', 'EMU', 'FOX',
+                        'OWL', 'ELK', 'FLY',
+                        'YAK'
+                    ]));
                 } else {
                     this.letters = [];
                     this.guess = [];
@@ -355,8 +378,6 @@
                 else {
                     let cor = {};
                     for (let i = 0; i < this.guess.length; i++) {
-                        console.log(this.letters[i][0] === this.guess[i], i, this.letters[i][0], this.guess[i], this
-                            .solution)
                         if (this.guess[i] === this.solution[i]) {
                             if (cor[this.guess[i]] === undefined) {
                                 cor[this.guess[i]] = 1;
@@ -377,7 +398,6 @@
                         this.letters[i][1] = true;
                     }
                     }
-                console.log(cor)
                 }
             },
 
@@ -386,7 +406,7 @@
                 if (this.guess.join('') === this.solution.join('')) {
                     this.clearClick()
                     this.score += this.seconds
-                    this.words[this.level - 1].shift()
+                    this.currentWords.shift()
                     this.letters = []
                     this.guess = []
 
@@ -400,7 +420,7 @@
                         this.betweenLetters.push([word[i], true])
                     }
 
-                    if (this.words[this.level - 1].length === 0) {
+                    if (this.currentWords.length === 0) {
                         this.level++
                         if (this.level === 11) {
                             this.level = "∞";
@@ -422,7 +442,6 @@
 
                 } else {
                     this.lives--
-                    console.log(this.guess, this.solution)
                     if (this.lives < 1) {
                         this.words = []
                         this.betweenWords = [
@@ -438,6 +457,31 @@
                         for (let i = 0; i < word.length; i++) {
                             this.betweenLetters.push([word[i], true])
                         }
+                    }
+                }
+
+                if (this.level === "∞" || this.lives === 0) {
+                    localStorage.setItem('highscore', this.highscore);
+                    localStorage.setItem('score', 0);
+                    localStorage.setItem('lives', 10);
+                    localStorage.setItem('level', 1);
+                    localStorage.setItem('currentWords', JSON.stringify([
+                    'DOG', 'PIG', 'RAT',
+                    'COW', 'EMU', 'FOX',
+                    'OWL', 'ELK', 'FLY',
+                    'YAK']));
+                }
+
+                else {
+                    localStorage.setItem('highscore', this.highscore);
+                    localStorage.setItem('score', this.score);
+                    localStorage.setItem('lives', this.lives);
+                    localStorage.setItem('level', this.level);
+                    if (this.currentWords.length === 0) {
+                        localStorage.setItem('currentWords', JSON.stringify(this.words[this.level - 1]));
+                    }
+                    else {
+                        localStorage.setItem('currentWords', JSON.stringify(this.currentWords));
                     }
                 }
             },
@@ -476,6 +520,12 @@
                 for (let i = 0; i < this.wordsReset.length; i++) {
                     this.words.push(this.wordsReset[i].slice())
                 }
+                    this.currentWords = [
+                        'DOG', 'PIG', 'RAT',
+                        'COW', 'EMU', 'FOX',
+                        'OWL', 'ELK', 'FLY',
+                        'YAK'
+                    ]
             },
 
             changeVal() {
